@@ -13,7 +13,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     var m = o[Symbol.asyncIterator], i;
     return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function (v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AutoSwagger = void 0;
@@ -189,6 +189,7 @@ class AutoSwagger {
             try {
                 for (routes_1 = __asyncValues(routes); routes_1_1 = yield routes_1.next(), !routes_1_1.done;) {
                     const route = routes_1_1.value;
+                    if (!options.ignore) continue
                     if (options.ignore.includes(route.pattern))
                         continue;
                     let security = [];
@@ -277,7 +278,7 @@ class AutoSwagger {
                             }
                             if (typeof responses[responseCodes[method]] !== "undefined" &&
                                 typeof responses[responseCodes[method]]["description"] !==
-                                    "undefined") {
+                                "undefined") {
                                 description = responses[responseCodes[method]]["description"];
                             }
                         }
@@ -301,11 +302,11 @@ class AutoSwagger {
                             summary: sourceFile === "" && action == ""
                                 ? summary + " (route.ts)"
                                 : summary +
-                                    " (" +
-                                    sourceFile.replace("App/Controllers/Http/", "") +
-                                    "::" +
-                                    action +
-                                    ")",
+                                " (" +
+                                sourceFile.replace("App/Controllers/Http/", "") +
+                                "::" +
+                                action +
+                                ")",
                             description: description,
                             parameters: parameters,
                             tags: tags,
@@ -869,14 +870,16 @@ class AutoSwagger {
             if (part.startsWith(":")) {
                 const param = part.replace(":", "");
                 part = "{" + param + "}";
-                parameters = Object.assign(Object.assign({}, parameters), { [param]: {
+                parameters = Object.assign(Object.assign({}, parameters), {
+                    [param]: {
                         in: "path",
                         name: param,
                         schema: {
                             type: "string",
                         },
                         required: true,
-                    } });
+                    }
+                });
             }
             pattern += "/" + part;
         });

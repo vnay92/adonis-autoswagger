@@ -194,6 +194,7 @@ export class AutoSwagger {
 
     let globalTags = [];
     for await (const route of routes) {
+      if (!options.ignore) continue;
       if (options.ignore.includes(route.pattern)) continue;
 
       let security = [];
@@ -301,7 +302,7 @@ export class AutoSwagger {
           if (
             typeof responses[responseCodes[method]] !== "undefined" &&
             typeof responses[responseCodes[method]]["description"] !==
-              "undefined"
+            "undefined"
           ) {
             description = responses[responseCodes[method]]["description"];
           }
@@ -329,11 +330,11 @@ export class AutoSwagger {
             sourceFile === "" && action == ""
               ? summary + " (route.ts)"
               : summary +
-                " (" +
-                sourceFile.replace("App/Controllers/Http/", "") +
-                "::" +
-                action +
-                ")",
+              " (" +
+              sourceFile.replace("App/Controllers/Http/", "") +
+              "::" +
+              action +
+              ")",
           description: description,
           parameters: parameters,
           tags: tags,
@@ -656,7 +657,7 @@ export class AutoSwagger {
         let app = {};
         try {
           app = JSON.parse("{" + append + "}");
-        } catch {}
+        } catch { }
 
         res = sum = "Returns a **single** instance of type `" + ref + "`";
         // references a schema array
@@ -726,7 +727,7 @@ export class AutoSwagger {
           let app = {};
           try {
             app = JSON.parse("{" + append + "}");
-          } catch {}
+          } catch { }
 
           // references a schema array
           if (ref.includes("[]")) {
@@ -786,7 +787,7 @@ export class AutoSwagger {
       let app = {};
       try {
         app = JSON.parse("{" + append + "}");
-      } catch {}
+      } catch { }
 
       // references a schema array
       if (ref.includes("[]")) {
